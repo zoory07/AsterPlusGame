@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfbk67g4hhisu"]
+
+[ext_resource type="FontFile" uid="uid://cmy2wt13lso5i" path="res://res/fontext.ttf" id="1_h7wn2"]
+[ext_resource type="Script" uid="uid://hyv56gq5tsvf" path="res://game/script/escena/intefaz/SistemaDePuntuacion.gd" id="1_itchv"]
+
+[node name="Puntuacion" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_itchv")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 8.0
+offset_right = 152.0
+offset_bottom = 40.0
+
+[node name="Puntos" type="Label" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("1_h7wn2")
+text = "Texto"

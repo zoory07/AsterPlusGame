@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3 uid="uid://b28fwywsg34bi"]
+
+[ext_resource type="Script" uid="uid://b7ija3yxi5nf4" path="res://game/script/escena/intefaz/menu/pausa.gd" id="1_bgagy"]
+[ext_resource type="FontFile" uid="uid://cmy2wt13lso5i" path="res://res/fontext.ttf" id="2_27cvg"]
+[ext_resource type="Script" uid="uid://ceco8x6f4ikxl" path="res://game/script/escena/intefaz/menu/ManagerMenu.gd" id="3_sylq4"]
+
+[node name="MenuPausa" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_bgagy")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.67451)
+
+[node name="pausa" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -115.0
+offset_top = -118.0
+offset_right = -64.0
+offset_bottom = -102.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(5, 5)
+theme_override_fonts/font = ExtResource("2_27cvg")
+text = "Pausa."
+
+[node name="interfaz" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_sylq4")
+
+[node name="renudar" type="Button" parent="interfaz"]
+process_mode = 3
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.495625
+anchor_top = 1.21
+anchor_right = 0.495625
+anchor_bottom = 1.21
+offset_left = -76.5
+offset_top = -398.0
+offset_right = 86.5
+offset_bottom = -358.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_27cvg")
+text = "Renudar Partida"
+metadata/_edit_use_anchors_ = true
+
+[node name="volver" type="Button" parent="interfaz"]
+process_mode = 3
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -79.0
+offset_top = -219.0
+offset_right = 84.0
+offset_bottom = -179.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_27cvg")
+text = "Volver a menu"
+metadata/_edit_use_anchors_ = true
+
+[connection signal="pressed" from="interfaz/renudar" to="interfaz" method="_on_renudar_pressed"]
+[connection signal="pressed" from="interfaz/volver" to="interfaz" method="_on_volver_pressed"]

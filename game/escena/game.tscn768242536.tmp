@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://c3e0wp2no44ww"]
+
+[ext_resource type="Script" uid="uid://ckpbsnjks5j15" path="res://game/script/escena/spamMeteorito.gd" id="1_6jx8n"]
+[ext_resource type="PackedScene" uid="uid://ce2x0i2fq84hc" path="res://game/escena/entity/player.tscn" id="1_ep7m4"]
+[ext_resource type="Texture2D" uid="uid://4pooocbq6p2a" path="res://res/estrella.png" id="2_i0e4l"]
+[ext_resource type="PackedScene" uid="uid://c0icp3old4o2x" path="res://game/escena/objetos/meteorito.tscn" id="3_f0t02"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_i0e4l"]
+emission_shape = 1
+emission_sphere_radius = 128.0
+gravity = Vector3(0, 0, 0)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_6jx8n")
+meteorito_escena = ExtResource("3_f0t02")
+
+[node name="Player" parent="." instance=ExtResource("1_ep7m4")]
+position = Vector2(1, -1)
+
+[node name="estrella_efect" type="GPUParticles2D" parent="Player"]
+position = Vector2(-1, 0)
+scale = Vector2(32.32, 18.68)
+amount = 500
+texture = ExtResource("2_i0e4l")
+lifetime = 0.71
+speed_scale = 0.5
+process_material = SubResource("ParticleProcessMaterial_i0e4l")

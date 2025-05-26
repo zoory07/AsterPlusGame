@@ -1,0 +1,67 @@
+[gd_scene load_steps=8 format=3 uid="uid://db5833wgr3riy"]
+
+[ext_resource type="Texture2D" uid="uid://dh3h5hmvea4s" path="res://res/icon.png" id="1_2hutd"]
+[ext_resource type="Script" uid="uid://db6awc1t5x546" path="res://game/script/OvniEnemigo01.gd" id="1_vme5t"]
+[ext_resource type="AudioStream" uid="uid://cqm88gjfgqt8b" path="res://res/sonido/ovni_explocion.wav" id="3_r3tgh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_st6tr"]
+size = Vector2(27, 21)
+
+[sub_resource type="Animation" id="Animation_vme5t"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [21]
+}
+
+[sub_resource type="Animation" id="Animation_2hutd"]
+resource_name = "eliminado"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [12, 13, 15]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r3tgh"]
+_data = {
+&"RESET": SubResource("Animation_vme5t"),
+&"eliminado": SubResource("Animation_2hutd")
+}
+
+[node name="OvniEnemigo" type="CharacterBody2D"]
+script = ExtResource("1_vme5t")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("1_2hutd")
+hframes = 6
+vframes = 6
+frame = 21
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1.5, 1.5)
+shape = SubResource("RectangleShape2D_st6tr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_r3tgh")
+}
+
+[node name="Explocion" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_r3tgh")

@@ -1,0 +1,123 @@
+[gd_scene load_steps=8 format=3 uid="uid://xtx3dwlhn5ho"]
+
+[ext_resource type="Texture2D" uid="uid://4pooocbq6p2a" path="res://res/estrella.png" id="1_f05wv"]
+[ext_resource type="Script" uid="uid://ceco8x6f4ikxl" path="res://game/script/escena/intefaz/menu/ManagerMenu.gd" id="1_yd4hn"]
+[ext_resource type="PackedScene" uid="uid://c0icp3old4o2x" path="res://game/escena/objetos/meteorito.tscn" id="2_vex05"]
+[ext_resource type="FontFile" uid="uid://hvamuv682jr6" path="res://res/funtetext.ttf" id="2_yd4hn"]
+[ext_resource type="Script" uid="uid://bqm1ols4rbfn8" path="res://game/script/testing/spamMeteoritoTesting.gd" id="4_to2tw"]
+[ext_resource type="Texture2D" uid="uid://b1a6xom17arhq" path="res://res/titulo.png" id="6_47jpk"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_47jpk"]
+emission_shape = 1
+emission_sphere_radius = 128.0
+gravity = Vector3(0, 0, 0)
+
+[node name="MenuInicio" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_yd4hn")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="meteorito" type="Node2D" parent="CanvasLayer"]
+script = ExtResource("4_to2tw")
+meteorito_escena = ExtResource("2_vex05")
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -216.0
+offset_top = -308.0
+offset_right = 4024.0
+offset_bottom = 3486.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.1, 0.097)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("6_47jpk")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
+self_modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="estrella_efect" type="GPUParticles2D" parent="CanvasLayer/PanelContainer"]
+position = Vector2(389, 272)
+scale = Vector2(32.32, 18.68)
+amount = 500
+texture = ExtResource("1_f05wv")
+lifetime = 0.71
+speed_scale = 0.5
+process_material = SubResource("ParticleProcessMaterial_47jpk")
+
+[node name="version" type="Label" parent="CanvasLayer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_fonts/font = ExtResource("2_yd4hn")
+text = " Aster 1.0a  "
+
+[node name="copyrhing" type="Label" parent="CanvasLayer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_fonts/font = ExtResource("2_yd4hn")
+text = "@zoory07"
+
+[node name="jugar" type="Button" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -90.0
+offset_top = -307.0
+offset_right = 75.0
+offset_bottom = -265.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_yd4hn")
+text = "Jugar"
+
+[node name="opcione" type="Button" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -256.0
+offset_right = 64.0
+offset_bottom = -216.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_yd4hn")
+text = "Opcion"
+
+[node name="salir" type="Button" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -208.0
+offset_right = 40.0
+offset_bottom = -168.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_yd4hn")
+text = "Salir"
+
+[connection signal="pressed" from="CanvasLayer/jugar" to="." method="_on_jugar_pressed"]
+[connection signal="pressed" from="CanvasLayer/opcione" to="." method="_on_opcione_pressed"]
+[connection signal="pressed" from="CanvasLayer/salir" to="." method="_on_salir_pressed"]

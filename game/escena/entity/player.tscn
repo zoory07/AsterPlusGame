@@ -1,0 +1,92 @@
+[gd_scene load_steps=11 format=3 uid="uid://ce2x0i2fq84hc"]
+
+[ext_resource type="Texture2D" uid="uid://dh3h5hmvea4s" path="res://res/icon.png" id="1_4gte3"]
+[ext_resource type="Script" uid="uid://q0aphgnfdd7k" path="res://game/script/player.gd" id="1_lun45"]
+[ext_resource type="PackedScene" uid="uid://36qvis1emknq" path="res://game/escena/entity/municio.tscn" id="2_g60ly"]
+[ext_resource type="AudioStream" uid="uid://cs1awp4r8dwqi" path="res://res/sonido/player_pulso2.wav" id="4_8lqge"]
+[ext_resource type="AudioStream" uid="uid://cj7qksig2tyud" path="res://res/sonido/municion.wav" id="5_abs3f"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gte3"]
+size = Vector2(4, 8)
+
+[sub_resource type="Animation" id="Animation_g60ly"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_8lqge"]
+resource_name = "a_GameOver"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.166667, 0.233333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2)]
+}
+
+[sub_resource type="Animation" id="Animation_lun45"]
+resource_name = "a_cohete"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.00574079, 0.1, 0.2, 0.366667),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_abs3f"]
+_data = {
+&"RESET": SubResource("Animation_g60ly"),
+&"a_GameOver": SubResource("Animation_8lqge"),
+&"a_cohete": SubResource("Animation_lun45")
+}
+
+[node name="Player" type="CharacterBody2D"]
+scale = Vector2(3, 3)
+script = ExtResource("1_lun45")
+municio = ExtResource("2_g60ly")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_4gte3")
+hframes = 6
+vframes = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_4gte3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_abs3f")
+}
+
+[node name="Audio_impulso" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_8lqge")
+
+[node name="municion_efecto" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_abs3f")
+attenuation = 1.56917

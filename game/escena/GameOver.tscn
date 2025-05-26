@@ -1,0 +1,96 @@
+[gd_scene load_steps=7 format=3 uid="uid://54nxavutqjqv"]
+
+[ext_resource type="Texture2D" uid="uid://4pooocbq6p2a" path="res://res/estrella.png" id="1_6mnk6"]
+[ext_resource type="FontFile" uid="uid://cmy2wt13lso5i" path="res://res/fontext.ttf" id="1_6nq3m"]
+[ext_resource type="Script" uid="uid://ceco8x6f4ikxl" path="res://game/script/escena/intefaz/menu/ManagerMenu.gd" id="1_8jgka"]
+[ext_resource type="FontFile" uid="uid://hvamuv682jr6" path="res://res/funtetext.ttf" id="3_q1qlo"]
+[ext_resource type="Script" uid="uid://ipthsokej02t" path="res://game/script/escena/intefaz/menu/ManagerGameOverPuntos.gd" id="5_je7k8"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jki5w"]
+emission_shape = 1
+emission_sphere_radius = 128.0
+gravity = Vector3(0, 0, 0)
+
+[node name="GameOver0" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_8jgka")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="estrella_efect" type="GPUParticles2D" parent="CanvasLayer"]
+position = Vector2(399, 304)
+scale = Vector2(32.32, 18.68)
+amount = 500
+texture = ExtResource("1_6mnk6")
+lifetime = 0.71
+speed_scale = 0.5
+process_material = SubResource("ParticleProcessMaterial_jki5w")
+
+[node name="volver_a_jugar" type="Button" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -275.0
+offset_right = 85.0
+offset_bottom = -233.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("1_6nq3m")
+text = "Reiniciar"
+metadata/_edit_use_anchors_ = true
+
+[node name="puntos" type="Label" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -20.0
+offset_right = 42.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_q1qlo")
+text = "texto"
+script = ExtResource("5_je7k8")
+formato_record = "¡NUEVO RECORD!"
+metadata/_edit_use_anchors_ = true
+
+[node name="volver2" type="Button" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -79.0
+offset_top = -219.0
+offset_right = 84.0
+offset_bottom = -179.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("1_6nq3m")
+text = "Volver a menu"
+metadata/_edit_use_anchors_ = true
+
+[node name="game_over" type="Label" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -152.0
+offset_top = -108.0
+offset_right = -86.0
+offset_bottom = -92.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(5, 5)
+theme_override_fonts/font = ExtResource("1_6nq3m")
+text = "Perdiste."
+
+[connection signal="pressed" from="CanvasLayer/volver_a_jugar" to="." method="_on_volver_a_jugar_pressed"]
+[connection signal="pressed" from="CanvasLayer/volver2" to="." method="_on_volver_2_pressed"]

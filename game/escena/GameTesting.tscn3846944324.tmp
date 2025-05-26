@@ -1,0 +1,72 @@
+[gd_scene load_steps=12 format=3 uid="uid://d3o0hib1ypti2"]
+
+[ext_resource type="Script" uid="uid://rw7hmf2so6mr" path="res://game/script/testing/OvniRespawnTesting.gd" id="1_3ua2r"]
+[ext_resource type="PackedScene" uid="uid://db5833wgr3riy" path="res://game/escena/entity/OvniEnemigo.tscn" id="2_wrksd"]
+[ext_resource type="Script" uid="uid://bqm1ols4rbfn8" path="res://game/script/testing/spamMeteoritoTesting.gd" id="3_3ua2r"]
+[ext_resource type="PackedScene" uid="uid://c0icp3old4o2x" path="res://game/escena/objetos/meteorito.tscn" id="4_to655"]
+[ext_resource type="PackedScene" uid="uid://ce2x0i2fq84hc" path="res://game/escena/entity/player.tscn" id="5_wrksd"]
+[ext_resource type="Texture2D" uid="uid://4pooocbq6p2a" path="res://res/estrella.png" id="6_0x501"]
+[ext_resource type="PackedScene" uid="uid://dfbk67g4hhisu" path="res://game/escena/objetos/iconos De Pantalla/puntuacion.tscn" id="7_glrk5"]
+[ext_resource type="PackedScene" uid="uid://cbrgl4giyjqai" path="res://game/escena/objetos/iconos De Pantalla/vida.tscn" id="8_wn5g4"]
+[ext_resource type="FontFile" uid="uid://hvamuv682jr6" path="res://res/funtetext.ttf" id="9_7oetp"]
+[ext_resource type="PackedScene" uid="uid://b28fwywsg34bi" path="res://game/escena/MenuPausa.tscn" id="9_eh1wj"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_i0e4l"]
+emission_shape = 1
+emission_sphere_radius = 128.0
+gravity = Vector3(0, 0, 0)
+
+[node name="Game_testing" type="Node2D"]
+
+[node name="Escena" type="CanvasLayer" parent="."]
+
+[node name="Ovni_respawn" type="Node2D" parent="Escena"]
+script = ExtResource("1_3ua2r")
+escena_ovni = ExtResource("2_wrksd")
+
+[node name="meteorito_spam" type="Node2D" parent="Escena"]
+position = Vector2(399, 306)
+script = ExtResource("3_3ua2r")
+meteorito_escena = ExtResource("4_to655")
+
+[node name="camara" type="Camera2D" parent="Escena"]
+position = Vector2(400, 301)
+
+[node name="Player" parent="Escena" instance=ExtResource("5_wrksd")]
+position = Vector2(399, 269)
+
+[node name="estrella_efect" type="GPUParticles2D" parent="Escena"]
+position = Vector2(399, 304)
+scale = Vector2(32.32, 18.68)
+amount = 500
+texture = ExtResource("6_0x501")
+lifetime = 0.71
+speed_scale = 0.5
+process_material = SubResource("ParticleProcessMaterial_i0e4l")
+
+[node name="Iconos De Pantalla" type="Node" parent="."]
+
+[node name="InformacionDePantalla" type="CanvasLayer" parent="Iconos De Pantalla"]
+
+[node name="Puntuacion" parent="Iconos De Pantalla/InformacionDePantalla" instance=ExtResource("7_glrk5")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Vida" parent="Iconos De Pantalla/InformacionDePantalla" instance=ExtResource("8_wn5g4")]
+script = null
+
+[node name="Label" type="Label" parent="Iconos De Pantalla/InformacionDePantalla"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -78.0
+offset_right = 78.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("9_7oetp")
+text = "Escena_Testing"
+
+[node name="MenuPausa" parent="Iconos De Pantalla" instance=ExtResource("9_eh1wj")]
