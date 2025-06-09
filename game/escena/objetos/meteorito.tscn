@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://c0icp3old4o2x"]
+[gd_scene load_steps=9 format=3 uid="uid://c0icp3old4o2x"]
 
 [ext_resource type="Script" uid="uid://do6k1iwwv5oqy" path="res://game/script/ObjMeteorito.gd" id="1_bx0a1"]
 [ext_resource type="Texture2D" uid="uid://dh3h5hmvea4s" path="res://res/icon.png" id="1_dnk4k"]
 [ext_resource type="AudioStream" uid="uid://oim2ptog7u7p" path="res://res/sonido/explosion.wav" id="3_jqt8e"]
+[ext_resource type="Script" uid="uid://cxsq7qh5jjgma" path="res://game/script/escena/intefaz/menu/EfectoDeAudio.gd" id="3_m1hnd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bx0a1"]
 size = Vector2(90, 63)
@@ -65,5 +66,8 @@ libraries = {
 &"": SubResource("AnimationLibrary_m1hnd")
 }
 
-[node name="explosion" type="AudioStreamPlayer2D" parent="."]
+[node name="efecto de sonido" type="Node" parent="."]
+script = ExtResource("3_m1hnd")
+
+[node name="explosion" type="AudioStreamPlayer2D" parent="efecto de sonido"]
 stream = ExtResource("3_jqt8e")

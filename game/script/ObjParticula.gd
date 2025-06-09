@@ -11,13 +11,16 @@ var esta_destruyendose = false
 var tipo_asteroide = "mediano"  # Por defecto
 var es_particula_generada = false  # NUEVA VARIABLE para evitar bucles
 
-#musica
-@onready var explosion_mini = $Explosion_Mini
+# Sistema de efectos de audio
+var efectos_audio: Node = null
 
 # Referencias a nodos
 @onready var animation_player = $AnimationPlayer if has_node("AnimationPlayer") else null
 
 func _ready():
+	# Buscar sistema de efectos de audio
+	buscar_sistema_efectos()
+	
 	# Establecer propiedades físicas
 	gravity_scale = 0.0
 	contact_monitor = true
@@ -47,6 +50,31 @@ func _ready():
 	# Si es una partícula generada, añadir al grupo correspondiente
 	if es_particula_generada:
 		add_to_group("particula_meteorito")
+
+func buscar_sistema_efectos():
+	# Buscar el sistema de efectos de audio global
+	efectos_audio = get_tree().get_first_node_in_group("efecto_audio")
+	
+	if not efectos_audio:
+		# Buscar por Autoload si está configurado
+		if has_node("/root/EfectoAudio"):
+			efectos_audio = get_node("/root/EfectoAudio")
+			print("PARTICULA: Sistema de efectos encontrado como Autoload")
+		else:
+			print("PARTICULA: No se encontró sistema de efectos global")
+	else:
+		print("PARTICULA: Sistema de efectos encontrado por grupo")
+
+# Función segura para reproducir sonido de explosión
+func reproducir_sonido_explosion():
+	if efectos_audio and efectos_audio.has_method("reproducir_explosion_meteorito"):
+		# Para partículas pequeñas, siempre usar explosión "mini"
+		if es_particula_generada or tipo_asteroide == "pequeno":
+			efectos_audio.reproducir_explosion_meteorito(global_position, "mini")
+		else:
+			efectos_audio.reproducir_explosion_meteorito(global_position, tipo_asteroide)
+	else:
+		print("PARTICULA: No se pudo reproducir sonido de explosión")
 
 # Determinar el tipo de asteroide según su tamaño
 func determinar_tipo_asteroide():
@@ -126,7 +154,10 @@ func _on_body_entered(body):
 func destruir():
 	# Marcar que está en proceso de destrucción para evitar acciones adicionales
 	esta_destruyendose = true
-	explosion_mini.play()
+	
+	# Reproducir sonido de explosión de forma segura
+	reproducir_sonido_explosion()
+	
 	print("Meteorito " + tipo_asteroide + ": Destruyendo")
 	
 	# Sumar puntos según el tipo de asteroide
@@ -242,6 +273,9 @@ func _on_animation_finished(anim_name):
 
 # Función que implementa la mecánica de Asteroids para fragmentación
 func _generar_fragmentos_por_tipo():
+	# Reproducir sonido al generar fragmentos
+	reproducir_sonido_explosion()
+	
 	# Según mecánica de Asteroids adaptada para partículas de tamaño adecuado:
 	# - Grande -> genera 2 medianos
 	# - Mediano -> genera 2 medianos (más pequeños pero aún medianos)
@@ -269,7 +303,7 @@ func _generar_fragmentos_por_tipo():
 	
 	# Primero intentar usar la escena de partícula configurada
 	var particula_escena = null
-	if escena_particula:
+	if escena_particula and ResourceLoader.exists(escena_particula):
 		particula_escena = load(escena_particula)
 	
 	# Si tenemos la escena de partícula, usarla preferentemente
@@ -331,35 +365,37 @@ func _generar_fragmentos_por_tipo():
 	# Generar los fragmentos usando el código existente
 	for i in range(num_fragmentos):
 		# Intentar crear desde la misma escena (auto-clon)
-		var nuevo_meteorito = load(get_scene_file_path())
-		
-		if nuevo_meteorito:
-			var fragmento = nuevo_meteorito.instantiate()
+		var scene_path = get_scene_file_path()
+		if scene_path and ResourceLoader.exists(scene_path):
+			var nuevo_meteorito = load(scene_path)
 			
-			# Configurar propiedades del fragmento según tipo
-			fragmento.tamano_meteorito = tamano_fragmento
-			fragmento.tipo_asteroide = tipo_fragmento
-			
-			# SOLUCIÓN AL BUG: Marcar como partícula generada
-			fragmento.es_particula_generada = true
-			
-			# CLAVE: Asegurar configuración correcta para detección
-			fragmento.collision_layer = 2  # Capa de meteoritos
-			fragmento.collision_mask = 5   # Jugador y proyectiles
-			
-			# Añadir a la escena
-			get_parent().add_child(fragmento)
-			
-			# Posicionarlo cerca del original con pequeña variación
-			var offset = Vector2(randf_range(-20, 20), randf_range(-20, 20))
-			fragmento.global_position = global_position + offset
-			
-			# Dar velocidad aleatoria en dirección distinta
-			var direccion = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
-			var velocidad = randf_range(70, 150)  # Velocidad adecuada para medianos
-			fragmento.linear_velocity = direccion * velocidad
-			
-			print("Creado fragmento " + tipo_fragmento + " a partir de " + tipo_asteroide)
+			if nuevo_meteorito:
+				var fragmento = nuevo_meteorito.instantiate()
+				
+				# Configurar propiedades del fragmento según tipo
+				fragmento.tamano_meteorito = tamano_fragmento
+				fragmento.tipo_asteroide = tipo_fragmento
+				
+				# SOLUCIÓN AL BUG: Marcar como partícula generada
+				fragmento.es_particula_generada = true
+				
+				# CLAVE: Asegurar configuración correcta para detección
+				fragmento.collision_layer = 2  # Capa de meteoritos
+				fragmento.collision_mask = 5   # Jugador y proyectiles
+				
+				# Añadir a la escena
+				get_parent().add_child(fragmento)
+				
+				# Posicionarlo cerca del original con pequeña variación
+				var offset = Vector2(randf_range(-20, 20), randf_range(-20, 20))
+				fragmento.global_position = global_position + offset
+				
+				# Dar velocidad aleatoria en dirección distinta
+				var direccion = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
+				var velocidad = randf_range(70, 150)  # Velocidad adecuada para medianos
+				fragmento.linear_velocity = direccion * velocidad
+				
+				print("Creado fragmento " + tipo_fragmento + " a partir de " + tipo_asteroide)
 		else:
 			# Si no se puede cargar la misma escena, usar el método alternativo
 			_crear_fragmentos_alternativos(tipo_fragmento, tamano_fragmento, num_fragmentos)
@@ -382,10 +418,11 @@ func _crear_fragmentos_alternativos(tipo_fragmento, tamano_fragmento, num_fragme
 	
 	# Intentar cargar la escena de meteorito desde varias rutas posibles
 	for ruta in rutas_posibles:
-		fragmento_escena = load(ruta)
-		if fragmento_escena != null:
-			ruta_encontrada = ruta
-			break
+		if ResourceLoader.exists(ruta):
+			fragmento_escena = load(ruta)
+			if fragmento_escena != null:
+				ruta_encontrada = ruta
+				break
 	
 	# Si no se puede cargar ninguna escena, crear un fragmento básico
 	if fragmento_escena == null:
@@ -484,9 +521,10 @@ func _crear_fragmentos_basicos(tipo_fragmento, tamano_fragmento, num_fragmentos)
 		]
 		
 		for ruta in rutas_texturas:
-			textura = load(ruta)
-			if textura != null:
-				break
+			if ResourceLoader.exists(ruta):
+				textura = load(ruta)
+				if textura != null:
+					break
 		
 		if textura != null:
 			sprite.texture = textura
@@ -506,7 +544,7 @@ func _crear_fragmentos_basicos(tipo_fragmento, tamano_fragmento, num_fragmentos)
 		fragmento.add_to_group("asteroide_" + tipo_fragmento)
 		
 		# Intentar cargar script para fragmento
-		var script_fragmento = load("res://fragmento.gd")
+		var script_fragmento = load("res://fragmento.gd") if ResourceLoader.exists("res://fragmento.gd") else null
 		if script_fragmento:
 			fragmento.set_script(script_fragmento)
 		else:

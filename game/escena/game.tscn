@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://c3e0wp2no44ww"]
+[gd_scene load_steps=16 format=3 uid="uid://c3e0wp2no44ww"]
 
 [ext_resource type="Script" uid="uid://ckpbsnjks5j15" path="res://game/script/escena/spamMeteorito.gd" id="1_6jx8n"]
 [ext_resource type="Script" uid="uid://q3mgf7auq60h" path="res://game/script/escena/OvniRespawn.gd" id="1_beewt"]
@@ -9,6 +9,11 @@
 [ext_resource type="PackedScene" uid="uid://cbrgl4giyjqai" path="res://game/escena/objetos/iconos De Pantalla/vida.tscn" id="6_haumf"]
 [ext_resource type="PackedScene" uid="uid://b28fwywsg34bi" path="res://game/escena/MenuPausa.tscn" id="7_p6ls6"]
 [ext_resource type="PackedScene" uid="uid://db5833wgr3riy" path="res://game/escena/entity/OvniEnemigo.tscn" id="9_m5l0s"]
+[ext_resource type="Script" uid="uid://c7kwhqblklhyk" path="res://game/script/escena/intefaz/MusicaEscena.gd" id="10_g5pg1"]
+[ext_resource type="AudioStream" uid="uid://denomj82hksvs" path="res://res/sonido/canciones/home.wav" id="11_3pcy3"]
+[ext_resource type="AudioStream" uid="uid://c2ktr4hg1detx" path="res://res/sonido/canciones/Nave espacial.wav" id="12_15p4f"]
+[ext_resource type="AudioStream" uid="uid://21no6c8jvj75" path="res://res/sonido/canciones/relax.wav" id="13_ierol"]
+[ext_resource type="AudioStream" uid="uid://sptbyfkrumhk" path="res://res/sonido/canciones/Canción de espacio.wav" id="14_4vmh0"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_i0e4l"]
 emission_shape = 1
@@ -57,3 +62,18 @@ grow_vertical = 2
 [node name="Vida" parent="Iconos De Pantalla/InformacionDePantalla" instance=ExtResource("6_haumf")]
 
 [node name="MenuPausa" parent="Iconos De Pantalla" instance=ExtResource("7_p6ls6")]
+
+[node name="musica_escena" type="Node" parent="."]
+script = ExtResource("10_g5pg1")
+
+[node name="home" type="AudioStreamPlayer2D" parent="musica_escena"]
+stream = ExtResource("11_3pcy3")
+
+[node name="NaveEspacial" type="AudioStreamPlayer2D" parent="musica_escena"]
+stream = ExtResource("12_15p4f")
+
+[node name="relax" type="AudioStreamPlayer2D" parent="musica_escena"]
+stream = ExtResource("13_ierol")
+
+[node name="CancionDeEspacio" type="AudioStreamPlayer2D" parent="musica_escena"]
+stream = ExtResource("14_4vmh0")

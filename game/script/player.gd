@@ -10,12 +10,11 @@ var velocity_vector = Vector2.ZERO
 # Variables para el sistema de disparo
 @export var municio: PackedScene
 @export var velocidad_disparo = 400.0
-@export var tiempo_recarga = 0.3  # Tiempo entre disparos
+@export var tiempo_recarga = 0.3
 var puede_disparar = true
 
-# Sonido
-@onready var impulso = $Audio_impulso
-@onready var effect_municion = $municion_efecto
+# Sistema de efectos de audio
+var efectos_audio: Node = null
 
 # Variables para el sistema de vidas y colisiones
 var sistema_vidas = null
@@ -23,19 +22,19 @@ var meteoritos_cercanos = []
 var radio_colision = 25.0
 var invulnerable = false
 
-# Referencias a los nodos - inicializadas a null para seguridad
+# Referencias a los nodos
 var nave_sprite = null
 var propulsor_sprite = null
 var animation_player = null
 
-# Variables para sonidos de pasos (sin @onready)
-var audio_pasos_node = null
-@export var sonidos_pasos: Array[AudioStream] = []
-var temporizador_pasos = 0.0
-var intervalo_pasos = 0.3
+# Estado del impulso
+var impulso_activo = false
 
 func _ready():
 	print("NAVE: Iniciando...")
+	
+	# Obtener el sistema de efectos de audio
+	_obtener_sistema_efectos()
 	
 	# Obtener referencias a nodos de forma segura
 	nave_sprite = get_node_or_null("NaveSprite")
@@ -49,9 +48,6 @@ func _ready():
 		print("NAVE: ADVERTENCIA - No se encontró el sprite de la nave")
 	else:
 		print("NAVE: Sprite de nave encontrado")
-	
-	# Configurar audio de pasos
-	configurar_audio_pasos()
 	
 	# Inicializar propulsor si existe
 	if nave_sprite and propulsor_sprite:
@@ -87,16 +83,22 @@ func _ready():
 	
 	print("NAVE: Inicialización completa")
 
-# Nueva función para configurar el audio de pasos
-func configurar_audio_pasos():
-	# Si no existe, crear uno nuevo
-	if not audio_pasos_node:
-		audio_pasos_node = AudioStreamPlayer2D.new()
-		audio_pasos_node.name = "Audio_pasos"
-		add_child(audio_pasos_node)
-		print("NAVE: Nodo de audio de pasos creado dinámicamente")
+func _obtener_sistema_efectos():
+	# Buscar el sistema de efectos por grupo
+	efectos_audio = get_tree().get_first_node_in_group("efecto_audio")
+	
+	# Si no lo encuentra por grupo, buscar por nombre
+	if not efectos_audio:
+		efectos_audio = get_node_or_null("/root/EfectoAudio")
+	
+	# Si aún no lo encuentra, buscar en el árbol
+	if not efectos_audio:
+		efectos_audio = get_tree().root.find_child("EfectoDeAudio", true, false)
+	
+	if efectos_audio:
+		print("NAVE: Sistema de efectos de audio encontrado")
 	else:
-		print("NAVE: Nodo de audio de pasos encontrado")
+		print("NAVE: ADVERTENCIA - No se encontró el sistema de efectos de audio")
 
 func buscar_sistema_vidas():
 	# Intentar encontrar el sistema de vidas de diferentes maneras
@@ -120,7 +122,6 @@ func buscar_sistema_vidas():
 	
 	print("NAVE: No se pudo encontrar el sistema de vidas")
 
-# Función para posicionar el propulsor
 func posicionar_propulsor():
 	if not nave_sprite or not propulsor_sprite:
 		return
@@ -152,7 +153,11 @@ func _physics_process(delta):
 	
 	# Empuje y propulsión
 	if Input.is_action_pressed("ariba") or Input.is_action_pressed("w"):
-		impulso.play()
+		# Activar impulso usando el sistema de efectos
+		if efectos_audio and not impulso_activo:
+			efectos_audio.activar_impulso(true, global_position)
+			impulso_activo = true
+		
 		# Manejo seguro de visibilidad del sprite de nave
 		if nave_sprite and not invulnerable:
 			nave_sprite.visible = true
@@ -161,11 +166,15 @@ func _physics_process(delta):
 		if animation_player and animation_player.has_animation("a_cohete"):
 			if not animation_player.is_playing() or animation_player.current_animation != "a_cohete":
 				animation_player.play("a_cohete")
-				
 		
 		var thrust_direction = Vector2(cos(rotation - PI/2), sin(rotation - PI/2))
 		velocity_vector += thrust_direction * thrust_power
 	else:
+		# Desactivar impulso
+		if efectos_audio and impulso_activo:
+			efectos_audio.activar_impulso(false)
+			impulso_activo = false
+		
 		# Manejo seguro de visibilidad del sprite
 		if nave_sprite and not invulnerable:
 			nave_sprite.visible = true
@@ -174,10 +183,6 @@ func _physics_process(delta):
 		if animation_player and animation_player.has_animation("RESET"):
 			if not animation_player.is_playing() or animation_player.current_animation != "RESET":
 				animation_player.play("RESET")
-				impulso.stop()
-		
-		# Detener sonido de pasos
-		manejar_sonido_pasos(false, delta)
 	
 	# Aplicar fricción y limitar velocidad
 	velocity_vector *= friction
@@ -188,12 +193,15 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("impulso") or Input.is_action_just_pressed("shift"):
 		var boost_direction = Vector2(cos(rotation - PI/2), sin(rotation - PI/2))
 		velocity_vector += boost_direction * 100.0
+		
+		# Efecto de sonido para el boost
+		if efectos_audio:
+			efectos_audio.reproducir_power_up(global_position)
 	
 	# Sistema de disparo
 	if (Input.is_action_just_pressed("ui_accept") or 
 		Input.is_action_just_pressed("espacio") or 
 		Input.is_action_just_pressed("space")) and puede_disparar:
-		effect_municion.play()
 		disparar()
 	
 	# Aplicar movimiento
@@ -203,33 +211,6 @@ func _physics_process(delta):
 	
 	# Verificar colisiones después de mover
 	_verificar_colisiones_por_physics()
-
-# Función para manejar el sonido de pasos
-func manejar_sonido_pasos(esta_moviendose, delta):
-	if not audio_pasos_node:
-		return
-	
-	if esta_moviendose:
-
-		temporizador_pasos += delta
-		
-		# Si tenemos sonidos múltiples, reproducir uno aleatorio cada intervalo
-		if sonidos_pasos.size() > 0:
-			if temporizador_pasos >= intervalo_pasos:
-				reproducir_paso_aleatorio()
-				temporizador_pasos = 0.0
-		else:
-			# Si no hay sonidos configurados, reproducir el stream actual en loop
-			if not audio_pasos_node.playing:
-				audio_pasos_node.play()
-
-
-# Función para reproducir pasos aleatorios
-func reproducir_paso_aleatorio():
-	if audio_pasos_node and sonidos_pasos.size() > 0:
-		var paso_aleatorio = sonidos_pasos[randi() % sonidos_pasos.size()]
-		audio_pasos_node.stream = paso_aleatorio
-		audio_pasos_node.play()
 
 # Verificar colisiones usando el sistema de física
 func _verificar_colisiones_por_physics():
@@ -287,10 +268,14 @@ func recibir_impacto():
 	
 	print("NAVE: Recibiendo impacto")
 	
-	# Detener sonidos de pasos al recibir impacto
-	if audio_pasos_node and audio_pasos_node.playing:
-		audio_pasos_node.stop()
+	# Detener impulso si está activo
+	if efectos_audio and impulso_activo:
+		efectos_audio.activar_impulso(false)
+		impulso_activo = false
 	
+	# Reproducir sonido de explosión usando el sistema de efectos
+	if efectos_audio:
+		efectos_audio.reproducir_explosion_enemigo(global_position)
 	
 	# Activar invulnerabilidad temporal
 	invulnerable = true
@@ -333,12 +318,16 @@ func game_over():
 	# Desactivar controles
 	set_physics_process(false)
 	
+	# Detener impulso si está activo
+	if efectos_audio and impulso_activo:
+		efectos_audio.activar_impulso(false)
+		impulso_activo = false
+	
 	# Ocultar la nave de manera segura
 	if nave_sprite:
 		nave_sprite.visible = false
 	
-	# NUEVO: Buscar y guardar la puntuación actual 
-	# antes de cambiar de escena
+	# Buscar y guardar la puntuación actual
 	var sistema_puntuacion = buscar_sistema_puntuacion()
 	if sistema_puntuacion != null:
 		if sistema_puntuacion.has_method("obtener_puntuacion"):
@@ -367,13 +356,21 @@ func game_over():
 	if parent:
 		parent.add_child(explosion)
 		explosion.global_position = global_position
-		impulso.play()
+		
+		# Reproducir sonido de explosión final
+		if efectos_audio:
+			efectos_audio.reproducir_explosion_enemigo(global_position)
+	
 	await get_tree().create_timer(1.5).timeout
+	
+	# Detener todos los efectos antes de cambiar de escena
+	if efectos_audio:
+		efectos_audio.detener_todos_los_efectos()
+	
 	get_tree().change_scene_to_file("res://game/escena/GameOver.tscn")
 	
 	print("NAVE: Game Over")
 
-# NUEVA FUNCIÓN: Agregar esta función auxiliar para buscar el sistema de puntuación
 func buscar_sistema_puntuacion():
 	# Buscar primero por grupos (más eficiente)
 	var sistemas = get_tree().get_nodes_in_group("sistemas_puntuacion")
@@ -388,7 +385,6 @@ func buscar_sistema_puntuacion():
 	# Buscar nodos que puedan tener métodos de puntuación
 	return buscar_nodo_recursivo(get_tree().root, "obtener_puntuacion")
 
-# Ya tienes una función recursiva similar para el sistema de vidas, aquí está para puntuación
 func buscar_nodo_recursivo(nodo, nombre_metodo):
 	# Verificar el nodo actual
 	if nodo.has_method(nombre_metodo):
@@ -408,6 +404,10 @@ func disparar():
 	if not municio:
 		print("Error: No se ha configurado la munición")
 		return
+	
+	# Reproducir sonido de disparo usando el sistema de efectos
+	if efectos_audio:
+		efectos_audio.reproducir_disparo(global_position)
 	
 	# Crear la bala
 	var bala = municio.instantiate()
@@ -441,3 +441,9 @@ func disparar():
 
 func _on_timer_disparo_timeout():
 	puede_disparar = true
+
+# Limpiar al salir
+func _exit_tree():
+	# Asegurarse de detener el impulso
+	if efectos_audio and impulso_activo:
+		efectos_audio.activar_impulso(false)

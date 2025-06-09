@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://ce2x0i2fq84hc"]
+[gd_scene load_steps=12 format=3 uid="uid://ce2x0i2fq84hc"]
 
 [ext_resource type="Texture2D" uid="uid://dh3h5hmvea4s" path="res://res/icon.png" id="1_4gte3"]
 [ext_resource type="Script" uid="uid://q0aphgnfdd7k" path="res://game/script/player.gd" id="1_lun45"]
 [ext_resource type="PackedScene" uid="uid://36qvis1emknq" path="res://game/escena/entity/municio.tscn" id="2_g60ly"]
 [ext_resource type="AudioStream" uid="uid://cs1awp4r8dwqi" path="res://res/sonido/player_pulso2.wav" id="4_8lqge"]
+[ext_resource type="Script" uid="uid://cxsq7qh5jjgma" path="res://game/script/escena/intefaz/menu/EfectoDeAudio.gd" id="4_y3g8q"]
 [ext_resource type="AudioStream" uid="uid://cj7qksig2tyud" path="res://res/sonido/municion.wav" id="5_abs3f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4gte3"]
@@ -84,9 +85,14 @@ libraries = {
 &"": SubResource("AnimationLibrary_abs3f")
 }
 
-[node name="Audio_impulso" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("4_8lqge")
+[node name="efecto de sonido" type="Node" parent="."]
+script = ExtResource("4_y3g8q")
 
-[node name="municion_efecto" type="AudioStreamPlayer2D" parent="."]
+[node name="municion_efecto" type="AudioStreamPlayer2D" parent="efecto de sonido"]
+scale = Vector2(3, 3)
 stream = ExtResource("5_abs3f")
 attenuation = 1.56917
+
+[node name="Audio_impulso" type="AudioStreamPlayer2D" parent="efecto de sonido"]
+scale = Vector2(3, 3)
+stream = ExtResource("4_8lqge")

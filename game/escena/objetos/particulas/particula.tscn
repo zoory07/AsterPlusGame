@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://dq7lram02njl1"]
+[gd_scene load_steps=9 format=3 uid="uid://dq7lram02njl1"]
 
 [ext_resource type="Script" uid="uid://itd7ejamjqpw" path="res://game/script/ObjParticula.gd" id="1_ab1tq"]
 [ext_resource type="Texture2D" uid="uid://dh3h5hmvea4s" path="res://res/icon.png" id="2_biwnv"]
+[ext_resource type="Script" uid="uid://cxsq7qh5jjgma" path="res://game/script/escena/intefaz/menu/EfectoDeAudio.gd" id="3_7eapi"]
 [ext_resource type="AudioStream" uid="uid://s4bl5ajmgh83" path="res://res/sonido/mini_explosion.wav" id="3_qcpia"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bx0a1"]
@@ -65,5 +66,8 @@ libraries = {
 &"": SubResource("AnimationLibrary_m1hnd")
 }
 
-[node name="Explosion_Mini" type="AudioStreamPlayer2D" parent="."]
+[node name="efecto de sonido" type="Node" parent="."]
+script = ExtResource("3_7eapi")
+
+[node name="Explosion_Mini" type="AudioStreamPlayer2D" parent="efecto de sonido"]
 stream = ExtResource("3_qcpia")

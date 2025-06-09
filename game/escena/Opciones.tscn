@@ -1,4 +1,8 @@
-[gd_scene format=3 uid="uid://dmk4na1esqabp"]
+[gd_scene load_steps=4 format=3 uid="uid://dmk4na1esqabp"]
+
+[ext_resource type="Script" uid="uid://ceco8x6f4ikxl" path="res://game/script/escena/intefaz/menu/ManagerMenu.gd" id="1_ks0j4"]
+[ext_resource type="FontFile" uid="uid://cmy2wt13lso5i" path="res://res/fontext.ttf" id="1_sc1k2"]
+[ext_resource type="Script" uid="uid://bwq5818gb18c7" path="res://game/script/escena/intefaz/menu/ManagerMusica.gd" id="4_8eer7"]
 
 [node name="Opciones" type="Control"]
 layout_mode = 3
@@ -7,3 +11,88 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ks0j4")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.67451)
+
+[node name="opciones" type="Label" parent="."]
+layout_mode = 1
+offset_left = 56.0
+offset_top = 24.0
+offset_right = 131.0
+offset_bottom = 40.0
+scale = Vector2(3, 3)
+theme_override_fonts/font = ExtResource("1_sc1k2")
+text = "Opciones."
+
+[node name="Musica" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -156.0
+offset_right = 118.0
+offset_bottom = -140.0
+grow_vertical = 2
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("1_sc1k2")
+text = "Musica."
+
+[node name="pausa" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -4.0
+offset_right = 117.0
+offset_bottom = 12.0
+grow_vertical = 2
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("1_sc1k2")
+text = "Sonido."
+
+[node name="volver" type="Button" parent="."]
+process_mode = 3
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.14667
+anchor_right = 0.5
+anchor_bottom = 1.14667
+offset_left = -79.0
+offset_top = -219.0
+offset_right = 84.0
+offset_bottom = -179.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("1_sc1k2")
+text = "Volver"
+metadata/_edit_use_anchors_ = true
+
+[node name="Sonido" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 320.0
+offset_right = 288.0
+offset_bottom = 376.0
+value = 100.0
+
+[node name="Musica1" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 168.0
+offset_right = 288.0
+offset_bottom = 224.0
+value = 100.0
+script = ExtResource("4_8eer7")
+
+[connection signal="pressed" from="volver" to="." method="_on_volver_pressedOpciones"]

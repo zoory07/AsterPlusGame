@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://b28fwywsg34bi"]
+[gd_scene load_steps=6 format=3 uid="uid://b28fwywsg34bi"]
 
 [ext_resource type="Script" uid="uid://b7ija3yxi5nf4" path="res://game/script/escena/intefaz/menu/pausa.gd" id="1_bgagy"]
 [ext_resource type="FontFile" uid="uid://cmy2wt13lso5i" path="res://res/fontext.ttf" id="2_27cvg"]
 [ext_resource type="Script" uid="uid://ceco8x6f4ikxl" path="res://game/script/escena/intefaz/menu/ManagerMenu.gd" id="3_sylq4"]
+[ext_resource type="FontFile" uid="uid://hvamuv682jr6" path="res://res/funtetext.ttf" id="4_vy6hy"]
+[ext_resource type="PackedScene" uid="uid://dmk4na1esqabp" path="res://game/escena/Opciones.tscn" id="5_f2u8k"]
 
 [node name="MenuPausa" type="CanvasLayer"]
 process_mode = 3
@@ -46,9 +48,9 @@ process_mode = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.495625
-anchor_top = 1.21
+anchor_top = 1.18333
 anchor_right = 0.495625
-anchor_bottom = 1.21
+anchor_bottom = 1.18333
 offset_left = -76.5
 offset_top = -398.0
 offset_right = 86.5
@@ -62,11 +64,11 @@ metadata/_edit_use_anchors_ = true
 [node name="volver" type="Button" parent="interfaz"]
 process_mode = 3
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.49875
+anchor_top = 1.045
+anchor_right = 0.49875
+anchor_bottom = 1.045
 offset_left = -79.0
 offset_top = -219.0
 offset_right = 84.0
@@ -77,5 +79,27 @@ theme_override_fonts/font = ExtResource("2_27cvg")
 text = "Volver a menu"
 metadata/_edit_use_anchors_ = true
 
+[node name="opcione" type="Button" parent="interfaz"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -240.0
+offset_right = 80.0
+offset_bottom = -200.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("4_vy6hy")
+text = "Opciones"
+
+[node name="Menu_Opciones" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Opciones" parent="Menu_Opciones" instance=ExtResource("5_f2u8k")]
+
 [connection signal="pressed" from="interfaz/renudar" to="interfaz" method="_on_renudar_pressed"]
 [connection signal="pressed" from="interfaz/volver" to="interfaz" method="_on_volver_pressed"]
+[connection signal="pressed" from="interfaz/opcione" to="interfaz" method="_on_opcione_pressed07"]

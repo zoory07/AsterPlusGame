@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://db5833wgr3riy"]
+[gd_scene load_steps=9 format=3 uid="uid://db5833wgr3riy"]
 
 [ext_resource type="Texture2D" uid="uid://dh3h5hmvea4s" path="res://res/icon.png" id="1_2hutd"]
 [ext_resource type="Script" uid="uid://db6awc1t5x546" path="res://game/script/OvniEnemigo01.gd" id="1_vme5t"]
+[ext_resource type="Script" uid="uid://cxsq7qh5jjgma" path="res://game/script/escena/intefaz/menu/EfectoDeAudio.gd" id="3_js84x"]
 [ext_resource type="AudioStream" uid="uid://cqm88gjfgqt8b" path="res://res/sonido/ovni_explocion.wav" id="3_r3tgh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_st6tr"]
@@ -63,5 +64,8 @@ libraries = {
 &"": SubResource("AnimationLibrary_r3tgh")
 }
 
-[node name="Explocion" type="AudioStreamPlayer2D" parent="."]
+[node name="efecto de sonido" type="Node" parent="."]
+script = ExtResource("3_js84x")
+
+[node name="Explocion" type="AudioStreamPlayer2D" parent="efecto de sonido"]
 stream = ExtResource("3_r3tgh")

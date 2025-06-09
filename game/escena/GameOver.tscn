@@ -25,6 +25,7 @@ amount = 500
 texture = ExtResource("1_6mnk6")
 lifetime = 0.71
 speed_scale = 0.5
+fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_jki5w")
 
 [node name="volver_a_jugar" type="Button" parent="CanvasLayer"]
@@ -93,4 +94,4 @@ theme_override_fonts/font = ExtResource("1_6nq3m")
 text = "Perdiste."
 
 [connection signal="pressed" from="CanvasLayer/volver_a_jugar" to="." method="_on_volver_a_jugar_pressed"]
-[connection signal="pressed" from="CanvasLayer/volver2" to="." method="_on_volver_2_pressed"]
+[connection signal="pressed" from="CanvasLayer/volver2" to="." method="_on_volver_gameover_pressed"]
